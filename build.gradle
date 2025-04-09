@@ -1,0 +1,54 @@
+plugins {
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'com.github.node-gradle.node' version '7.0.1'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'com.h2database:h2'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+node {
+    version = '20.11.1'
+    npmVersion = '10.2.4'
+    download = true
+    nodeProjectDir = file("${project.projectDir}/src/main/frontend")
+}
+
+task buildFrontend(type: NpmTask) {
+    workingDir = file("${project.projectDir}/src/main/frontend")
+    args = ['run', 'build']
+}
+
+task copyFrontend(type: Copy) {
+    from "${project.projectDir}/src/main/frontend/build"
+    into "${project.projectDir}/src/main/resources/static"
+}
+
+buildFrontend.dependsOn npm_install
+copyFrontend.dependsOn buildFrontend
+processResources.dependsOn copyFrontend 
