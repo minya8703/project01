@@ -59,4 +59,9 @@ application-*.properties
 
 # OS
 .DS_Store
-Thumbs.db 
+Thumbs.db
+
+# Frontend build files
+src/main/frontend/node-v20.11.1-darwin-arm64/
+src/main/frontend/npm-v10.2.4/
+src/main/resources/static/ 
